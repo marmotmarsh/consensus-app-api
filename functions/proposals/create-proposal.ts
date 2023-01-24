@@ -34,7 +34,7 @@ export async function createProposal(event: Event, context: Context) {
   } catch (error) {
     return {
       statusCode: 400,
-      body: error,
+      body: JSON.stringify(error),
     };
   } finally {
     connection.end();
