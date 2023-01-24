@@ -16,14 +16,8 @@ export async function createProposal(event: Event, context: Context) {
     const { title, description, email, userId, userName } = proposal;
 
     const result: Proposal = await query(
-      `INSERT INTO proposals (ID, Title, Description, Email, UserId, UserName) VALUES (${
-        (uuid4(),
-        title,
-        description,
-        email || null,
-        userId || null,
-        userName || null)
-      });`
+      `INSERT INTO proposals (ID, Title, Description, Email, UserId, UserName) VALUES (${uuid4()}, ${title}, ${description}, ` +
+        `${email || null}, ${userId || null}, ${userName || null});`
     );
 
     return {
