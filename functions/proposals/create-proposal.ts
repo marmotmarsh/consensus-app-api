@@ -1,15 +1,13 @@
-import { Handler } from '@netlify/functions';
-import mysql from 'mysql2';
 import util from 'util';
 import { v4 as uuid4 } from 'uuid';
 
-import { createDBConnection } from '../../../util';
-import { NewProposal, Proposal } from '../../../types';
+import { createDBConnection } from '../../util';
+import { NewProposal, Proposal, Event, Context } from '../../types';
 
 const connection = createDBConnection();
 const query = util.promisify(connection.query).bind(connection);
 
-export const handler: Handler = async (event, context) => {
+export async function createProposal(event: Event, context: Context) {
   // const { name = 'stranger' } = event.queryStringParameters;
   try {
     const method = event.httpMethod;
@@ -31,4 +29,4 @@ export const handler: Handler = async (event, context) => {
   } finally {
     connection.end();
   }
-};
+}

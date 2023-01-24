@@ -11,3 +11,5 @@ export interface Proposal extends NewProposal {
   createdAt: string;
   updatedAt: string;
 }
+
+export * from './netlify';

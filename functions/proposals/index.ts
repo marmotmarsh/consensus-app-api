@@ -1,18 +1,26 @@
 import { Handler } from '@netlify/functions';
+import { createProposal } from './create-proposal';
 
 export const handler: Handler = async (event, context) => {
-  // const { name = 'stranger' } = event.queryStringParameters;
-  const path = event.path;
+  const { path, httpMethod } = event;
+  const subPaths = path.split('/');
 
-  const proposal = event.body;
-  const method = event.httpMethod;
-
-  // Create new Proposal
+  // Create New Proposal
+  if (
+    subPaths[0] === '' &&
+    subPaths[1] === '.netlify' &&
+    subPaths[2] === 'functions' &&
+    subPaths[3] === 'proposals' &&
+    subPaths[4] === 'create' &&
+    httpMethod === 'POST'
+  ) {
+    return await createProposal(event, context);
+  }
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: `Hello, you used method: ${method}!`,
+      message: `Hello, you used method: ${httpMethod} and path: ${path}, which do not exist`,
     }),
   };
 };
