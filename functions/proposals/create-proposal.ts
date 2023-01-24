@@ -18,13 +18,23 @@ export async function createProposal(event: Event, context: Context) {
 
     const result: Proposal = await query(
       `INSERT INTO proposals (ID, Title, Description, Email, UserId, UserName) VALUES (${
-        (uuid4(), title, description, email, userId, userName)
+        (uuid4(),
+        title,
+        description,
+        email || null,
+        userId || null,
+        userName || null)
       });`
     );
 
     return {
       statusCode: 200,
       body: JSON.stringify(result),
+    };
+  } catch (error) {
+    return {
+      statusCode: 400,
+      body: error,
     };
   } finally {
     connection.end();
