@@ -4,11 +4,10 @@ import { v4 as uuid4 } from 'uuid';
 import { createDBConnection } from '../../util';
 import { NewProposal, Proposal, Event, Context } from '../../types';
 
-const connection = createDBConnection();
-const query = util.promisify(connection.query).bind(connection);
-
 export async function createProposal(event: Event, context: Context) {
-  // const { name = 'stranger' } = event.queryStringParameters;
+  const connection = createDBConnection();
+  const query = util.promisify(connection.query).bind(connection);
+
   try {
     const method = event.httpMethod;
     const path = event.path;
