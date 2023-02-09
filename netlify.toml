@@ -128,11 +128,12 @@
 #   to = "/index.html"
 #   status = 200
 
-# [[headers]]
-#   # Define which paths this specific [[headers]] block will cover.
-#   for = "/*"
+[[headers]]
+  # Define which paths this specific [[headers]] block will cover.
+  for = "/*"
 
-#   [headers.values]
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
 #     X-Frame-Options = "DENY"
 #     X-XSS-Protection = "1; mode=block"
 #     Content-Security-Policy = "frame-ancestors https://www.facebook.com"
