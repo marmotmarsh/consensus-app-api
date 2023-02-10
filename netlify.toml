@@ -133,7 +133,8 @@
   for = "/*"
 
     [headers.values]
-    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Origin = "https://dev.consensuscheck.com/"
+    Access-Control-Allow-Methods = "GET, DELETE, HEAD, OPTIONS"
 #     X-Frame-Options = "DENY"
 #     X-XSS-Protection = "1; mode=block"
 #     Content-Security-Policy = "frame-ancestors https://www.facebook.com"
