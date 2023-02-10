@@ -1,5 +1,11 @@
 import mysql, { Connection, ConnectionOptions } from 'mysql2';
 
+export const GLOBAL_HEADERS = {
+  'Access-Control-Allow-Origin': 'https://dev.consensuscheck.com',
+  'Access-Control-Allow-Methods': 'GET, DELETE, HEAD, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
 export function createDBConnection(): Connection {
   const connectionOptions: ConnectionOptions = {
     user: process.env.DATABASE_USER,

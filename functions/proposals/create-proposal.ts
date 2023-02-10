@@ -1,7 +1,7 @@
 import util from 'util';
 import { v4 as uuid4 } from 'uuid';
 
-import { createDBConnection } from '../../util';
+import { createDBConnection, GLOBAL_HEADERS } from '../../util';
 import { NewProposal, Proposal, Event, Context } from '../../types';
 
 export async function createProposal(event: Event, context: Context) {
@@ -22,11 +22,13 @@ export async function createProposal(event: Event, context: Context) {
 
     return {
       statusCode: 200,
+      headers: GLOBAL_HEADERS,
       body: JSON.stringify(result),
     };
   } catch (error) {
     return {
       statusCode: 400,
+      headers: GLOBAL_HEADERS,
       body: JSON.stringify(error),
     };
   } finally {
