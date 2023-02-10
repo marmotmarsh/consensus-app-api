@@ -20,6 +20,7 @@ export const handler: Handler = async (event, context) => {
           headers: {
             'Access-Control-Allow-Origin': 'https://dev.consensuscheck.com',
             'Access-Control-Allow-Methods': 'GET, DELETE, HEAD, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
           },
         };
       }
