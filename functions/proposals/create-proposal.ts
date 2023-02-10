@@ -22,6 +22,9 @@ export async function createProposal(event: Event, context: Context) {
 
     return {
       statusCode: 200,
+      headers: {
+        'access-control-allow-origin': '*',
+      },
       body: JSON.stringify(result),
     };
   } catch (error) {
