@@ -133,7 +133,7 @@
   for = "/*"
 
     [headers.values]
-    Access-Control-Allow-Origin = "https://dev.consensuscheck.com/"
+    Access-Control-Allow-Origin = "https://dev.consensuscheck.com"
     Access-Control-Allow-Methods = "GET, DELETE, HEAD, OPTIONS"
 #     X-Frame-Options = "DENY"
 #     X-XSS-Protection = "1; mode=block"
