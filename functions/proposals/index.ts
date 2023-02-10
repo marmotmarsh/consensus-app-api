@@ -18,7 +18,7 @@ export const handler: Handler = async (event, context) => {
         return {
           statusCode: 200,
           headers: {
-            'Access-Control-Allow-Origin': 'https://example.com',
+            'Access-Control-Allow-Origin': 'https://dev.consensuscheck.com',
             'Access-Control-Allow-Methods': 'GET, DELETE, HEAD, OPTIONS',
           },
         };
