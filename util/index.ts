@@ -1,7 +1,8 @@
 import mysql, { Connection, ConnectionOptions } from 'mysql2';
 
 export const GLOBAL_HEADERS = {
-  'Access-Control-Allow-Origin': 'https://dev.consensuscheck.com',
+  // 'Access-Control-Allow-Origin': 'https://dev.consensuscheck.com',
+  'Access-Control-Allow-Origin': '*', // TODO: Allow any origin for now. Switch to above line later.
   'Access-Control-Allow-Methods': 'GET, DELETE, HEAD, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };

@@ -1,4 +1,5 @@
 import { Handler } from '@netlify/functions';
+import { GLOBAL_HEADERS } from '../../util';
 import { createProposal } from './create-proposal';
 
 export const handler: Handler = async (event, context) => {
@@ -17,12 +18,7 @@ export const handler: Handler = async (event, context) => {
         // Pre-Flight Response
         return {
           statusCode: 200,
-          headers: {
-            // 'Access-Control-Allow-Origin': 'https://dev.consensuscheck.com',
-            'Access-Control-Allow-Origin': '*', // TODO: Allow any origin for now. Switch to above line later.
-            'Access-Control-Allow-Methods': 'GET, DELETE, HEAD, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-          },
+          headers: GLOBAL_HEADERS,
         };
       }
     }
