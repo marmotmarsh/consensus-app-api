@@ -1,3 +1,9 @@
+export interface DBO {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface NewProposal {
   title: string;
   description: string;
@@ -5,11 +11,21 @@ export interface NewProposal {
   userId?: string;
   userName?: string;
 }
+export interface Proposal extends NewProposal, DBO {}
 
-export interface Proposal extends NewProposal {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
+export enum ThumbEnum {
+  Yes = 'Yes',
+  No = 'No',
+  Sideways = 'Sideways',
+  NoReply = 'No Reply',
 }
+
+export interface NewProposalResponse {
+  proposalId: string;
+  userName: string;
+  thumb?: ThumbEnum;
+  comment?: string;
+}
+export interface ProposalResponse extends NewProposalResponse, DBO {}
 
 export * from './netlify';
