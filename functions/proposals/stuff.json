@@ -1,0 +1,60 @@
+{
+  "shortID": "1pzfddyja4g",
+  "editCode": "m3g2qj",
+  "editedTime": 1674235888535,
+  "description": "123",
+  "responses": [
+    {
+      "id": 6254975009161216,
+      "name": "",
+      "thumb": "sideways",
+      "comment": "",
+      "proposalKey": {
+        "raw": {
+          "kind": "Proposal",
+          "id": 6295100808232960
+        }
+      },
+      "dirty": false,
+      "createdTime": 1676305192857,
+      "updatedTime": 1676305192857
+    },
+    {
+      "id": 6208572719366144,
+      "name": "morty",
+      "thumb": "up",
+      "comment": "",
+      "proposalKey": {
+        "raw": {
+          "kind": "Proposal",
+          "id": 6295100808232960
+        }
+      },
+      "dirty": true,
+      "createdTime": 1676305215990,
+      "updatedTime": 1676305216310
+    },
+    {
+      "id": 6223890934136832,
+      "name": "hyt",
+      "thumb": "sideways",
+      "comment": "",
+      "proposalKey": {
+        "raw": {
+          "kind": "Proposal",
+          "id": 6295100808232960
+        }
+      },
+      "dirty": true,
+      "createdTime": 1676305221985,
+      "updatedTime": 1676305222331
+    }
+  ],
+  "createdTime": 1674235884700,
+  "contentEditedTime": 1674235885732,
+  "userEmail": "",
+  "id": 6295100808232960,
+  "firstView": false,
+  "title": "123",
+  "userName": "me"
+}
