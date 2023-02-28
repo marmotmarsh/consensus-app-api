@@ -1,11 +1,6 @@
 import util from 'util';
 
-import {
-  checkIfValidUUID4,
-  createDBConnection,
-  GLOBAL_HEADERS,
-  makeNullableFieldSubquery,
-} from '../../util';
+import { checkIfValidUUID4, createDBConnection, GLOBAL_HEADERS, makeNullableFieldSubquery } from '../../util';
 import { Event, Context, DBOProposal, QueryResponseObject } from '../../types';
 import { PROPOSAL_TABLE_NAME } from '../../const';
 
@@ -26,11 +21,11 @@ export async function updateProposal(event: Event, context: Context) {
 
     const response: QueryResponseObject = await query(
       `UPDATE ${PROPOSAL_TABLE_NAME} SET ` +
-        `Title = '${proposal.Title}', ` +
-        `Description = '${proposal.Description}', ` +
-        `Email = ${makeNullableFieldSubquery(proposal.Email)}, ` +
-        `UserId = ${makeNullableFieldSubquery(proposal.UserId)}, ` +
-        `UserName = ${makeNullableFieldSubquery(proposal.UserName)} ` +
+        (!!proposal.Title ? `Title = '${proposal.Title}', ` : '') +
+        (!!proposal.Description ? `Description = '${proposal.Description}', ` : '') +
+        (!!proposal.Email ? `Email = ${makeNullableFieldSubquery(proposal.Email)}, ` : '') +
+        (!!proposal.UserId ? `UserId = ${makeNullableFieldSubquery(proposal.UserId)}, ` : '') +
+        (!!proposal.UserName ? `UserName = ${makeNullableFieldSubquery(proposal.UserName)}, ` : '') +
         `WHERE ID = ${proposalId};`
     );
 
@@ -38,9 +33,7 @@ export async function updateProposal(event: Event, context: Context) {
       throw new Error(`Failed to save Proposal with title: ${proposal.Title}`);
     }
 
-    const proposals: DBOProposal[] = await query(
-      `SELECT * FROM ${PROPOSAL_TABLE_NAME} WHERE ID="${proposalId}";`
-    );
+    const proposals: DBOProposal[] = await query(`SELECT * FROM ${PROPOSAL_TABLE_NAME} WHERE ID="${proposalId}";`);
 
     return {
       statusCode: 200,
