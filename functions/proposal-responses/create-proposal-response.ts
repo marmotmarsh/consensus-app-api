@@ -1,14 +1,19 @@
 import util from 'util';
 import { v4 as uuid4 } from 'uuid';
 
-import { createDBConnection, GLOBAL_HEADERS } from '../../util';
 import {
-  NewProposal,
-  Proposal,
+  createDBConnection,
+  GLOBAL_HEADERS,
+  makeNullableFieldSubquery,
+} from '../../util';
+import {
   Event,
   Context,
-  NewProposalResponse,
+  DBOProposalResponse,
+  QueryResponseObject,
+  DBOProposal,
 } from '../../types';
+import { PROPOSAL_RESPONSE_TABLE_NAME, PROPOSAL_TABLE_NAME } from '../../const';
 
 export async function createProposalResponse(event: Event, context: Context) {
   const connection = createDBConnection();
@@ -18,18 +23,37 @@ export async function createProposalResponse(event: Event, context: Context) {
     const method = event.httpMethod;
     const path = event.path;
 
-    const proposalResponse: NewProposalResponse = JSON.parse(event.body || '');
-    const { proposalId, userName, thumb, comment } = proposalResponse;
+    const proposalResponse: DBOProposalResponse = JSON.parse(event.body || '');
+    const newProposalResponseId = uuid4();
 
-    const result: Proposal = await query(
-      `INSERT INTO proposals (ID, ProposalId, UserName, Thumb, Comment) VALUES ('${uuid4()}', '${proposalId}', '${userName}', ` +
-        `'${thumb || null}', '${comment || null}');`
+    const proposals: DBOProposal[] = await query(
+      `SELECT * FROM ${PROPOSAL_TABLE_NAME} WHERE ID="${proposalResponse.ProposalId}";`
+    );
+
+    if (proposals.length < 1) {
+      throw new Error(`Invalid ProposalId: ${proposalResponse.ProposalId}`);
+    }
+
+    const response: QueryResponseObject = await query(
+      `INSERT INTO ${PROPOSAL_RESPONSE_TABLE_NAME} (ID, ProposalId, UserName, Thumb, Comment) VALUES ('${newProposalResponseId}', ` +
+        `'${proposalResponse.ProposalId}', '${proposalResponse.UserName}', ${proposalResponse.Thumb}, ` +
+        `${makeNullableFieldSubquery(proposalResponse.Comment)});`
+    );
+
+    if (response.affectedRows !== 1) {
+      throw new Error(
+        `Failed to save Proposal Response for User: ${proposalResponse.UserName}`
+      );
+    }
+
+    const proposalResponses: DBOProposalResponse[] = await query(
+      `SELECT * FROM ${PROPOSAL_RESPONSE_TABLE_NAME} WHERE ID = "${newProposalResponseId}";`
     );
 
     return {
       statusCode: 200,
       headers: GLOBAL_HEADERS,
-      body: JSON.stringify(result),
+      body: JSON.stringify(proposalResponses[0] || {}),
     };
   } catch (error) {
     return {

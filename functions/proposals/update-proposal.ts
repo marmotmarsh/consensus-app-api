@@ -1,5 +1,4 @@
 import util from 'util';
-import { v4 as uuid4 } from 'uuid';
 
 import {
   createDBConnection,
@@ -9,7 +8,7 @@ import {
 import { Event, Context, DBOProposal, QueryResponseObject } from '../../types';
 import { PROPOSAL_TABLE_NAME } from '../../const';
 
-export async function createProposal(event: Event, context: Context) {
+export async function updateProposal(event: Event, context: Context) {
   const connection = createDBConnection();
   const query = util.promisify(connection.query).bind(connection);
 
@@ -17,25 +16,25 @@ export async function createProposal(event: Event, context: Context) {
     const method = event.httpMethod;
     const path = event.path;
 
-    const newProposal: DBOProposal = JSON.parse(event.body || '');
-    const newProposalId = uuid4();
+    const proposal: DBOProposal = JSON.parse(event.body || '');
+    const proposalId = proposal.ID;
 
     const response: QueryResponseObject = await query(
-      `INSERT INTO ${PROPOSAL_TABLE_NAME} (ID, Title, Description, Email, UserId, UserName) VALUES ('${newProposalId}', ` +
-        `'${newProposal.Title}', '${newProposal.Description}', ` +
-        `${makeNullableFieldSubquery(newProposal.Email)}, ` +
-        `${makeNullableFieldSubquery(newProposal.UserId)}, ` +
-        `${makeNullableFieldSubquery(newProposal.UserName)});`
+      `UPDATE ${PROPOSAL_TABLE_NAME} SET ` +
+        `Title = '${proposal.Title}', ` +
+        `Description = '${proposal.Description}', ` +
+        `Email = ${makeNullableFieldSubquery(proposal.Email)}, ` +
+        `UserId = ${makeNullableFieldSubquery(proposal.UserId)}, ` +
+        `UserName = ${makeNullableFieldSubquery(proposal.UserName)} ` +
+        `WHERE ID = ${proposalId};`
     );
 
     if (response.affectedRows !== 1) {
-      throw new Error(
-        `Failed to save Proposal with title: ${newProposal.Title}`
-      );
+      throw new Error(`Failed to save Proposal with title: ${proposal.Title}`);
     }
 
     const proposals: DBOProposal[] = await query(
-      `SELECT * FROM ${PROPOSAL_TABLE_NAME} WHERE ID = "${newProposalId}";`
+      `SELECT * FROM ${PROPOSAL_TABLE_NAME} WHERE ID="${proposalId}";`
     );
 
     return {

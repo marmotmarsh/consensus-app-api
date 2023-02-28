@@ -5,10 +5,13 @@ import {
   createDBConnection,
   GLOBAL_HEADERS,
 } from '../../util';
-import { Event, Context, DBOProposal } from '../../types';
-import { PROPOSAL_TABLE_NAME } from '../../const';
+import { Event, Context, DBOProposalResponse } from '../../types';
+import { PROPOSAL_RESPONSE_TABLE_NAME } from '../../const';
 
-export async function getProposal(event: Event, context: Context) {
+export async function getProposalResponsesByProposalId(
+  event: Event,
+  context: Context
+) {
   const connection = createDBConnection();
   const query = util.promisify(connection.query).bind(connection);
 
@@ -16,18 +19,17 @@ export async function getProposal(event: Event, context: Context) {
     const proposalId = event.path.split('/')[4];
 
     if (checkIfValidUUID4(proposalId)) {
-      throw new Error(`${proposalId} is not a valid Id.`);
+      throw new Error(`Invalud syntax for Id: ${proposalId}.`);
     }
 
-    const result = await query(
-      `SELECT * FROM ${PROPOSAL_TABLE_NAME} WHERE ID="${proposalId}";`
+    const proposalResponses: DBOProposalResponse[] = await query(
+      `SELECT * FROM ${PROPOSAL_RESPONSE_TABLE_NAME} WHERE ProposalId="${proposalId}";`
     );
-    const proposal: DBOProposal = result[0] || {};
 
     return {
       statusCode: 200,
       headers: GLOBAL_HEADERS,
-      body: JSON.stringify(proposal),
+      body: JSON.stringify(proposalResponses),
     };
   } catch (error) {
     return {
