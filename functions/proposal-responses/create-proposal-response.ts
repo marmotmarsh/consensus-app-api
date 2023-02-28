@@ -1,18 +1,8 @@
 import util from 'util';
 import { v4 as uuid4 } from 'uuid';
 
-import {
-  createDBConnection,
-  GLOBAL_HEADERS,
-  makeNullableFieldSubquery,
-} from '../../util';
-import {
-  Event,
-  Context,
-  DBOProposalResponse,
-  QueryResponseObject,
-  DBOProposal,
-} from '../../types';
+import { createDBConnection, GLOBAL_HEADERS, makeNullableFieldSubquery, sanitizeString } from '../../util';
+import { Event, Context, DBOProposalResponse, QueryResponseObject, DBOProposal } from '../../types';
 import { PROPOSAL_RESPONSE_TABLE_NAME, PROPOSAL_TABLE_NAME } from '../../const';
 
 export async function createProposalResponse(event: Event, context: Context) {
@@ -35,15 +25,16 @@ export async function createProposalResponse(event: Event, context: Context) {
     }
 
     const response: QueryResponseObject = await query(
-      `INSERT INTO ${PROPOSAL_RESPONSE_TABLE_NAME} (ID, ProposalId, UserName, Thumb, Comment) VALUES ('${newProposalResponseId}', ` +
-        `'${proposalResponse.ProposalId}', '${proposalResponse.UserName}', ${proposalResponse.Thumb}, ` +
-        `${makeNullableFieldSubquery(proposalResponse.Comment)});`
+      `INSERT INTO ${PROPOSAL_RESPONSE_TABLE_NAME} (ID, ProposalId, UserName, Thumb, Comment) VALUES ` +
+        `('${newProposalResponseId}', ` +
+        `'${proposalResponse.ProposalId}', ` +
+        `'${sanitizeString(proposalResponse.UserName)}', ` +
+        `${proposalResponse.Thumb}, ` +
+        `${makeNullableFieldSubquery(sanitizeString(proposalResponse.Comment))});`
     );
 
     if (response.affectedRows !== 1) {
-      throw new Error(
-        `Failed to save Proposal Response for User: ${proposalResponse.UserName}`
-      );
+      throw new Error(`Failed to save Proposal Response for User: ${proposalResponse.UserName}`);
     }
 
     const proposalResponses: DBOProposalResponse[] = await query(

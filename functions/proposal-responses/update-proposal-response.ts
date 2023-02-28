@@ -5,13 +5,9 @@ import {
   createDBConnection,
   GLOBAL_HEADERS,
   makeNullableFieldSubquery,
+  sanitizeString,
 } from '../../util';
-import {
-  Event,
-  Context,
-  QueryResponseObject,
-  DBOProposalResponse,
-} from '../../types';
+import { Event, Context, QueryResponseObject, DBOProposalResponse } from '../../types';
 import { PROPOSAL_RESPONSE_TABLE_NAME } from '../../const';
 
 export async function updateProposalResponse(event: Event, context: Context) {
@@ -31,16 +27,14 @@ export async function updateProposalResponse(event: Event, context: Context) {
 
     const response: QueryResponseObject = await query(
       `UPDATE ${PROPOSAL_RESPONSE_TABLE_NAME} SET ` +
-        `UserName = '${proposalResponse.UserName}', ` +
+        `UserName = '${sanitizeString(proposalResponse.UserName)}', ` +
         `Thumb = '${proposalResponse.Thumb}', ` +
-        `Comment = ${makeNullableFieldSubquery(proposalResponse.Comment)} ` +
+        `Comment = ${makeNullableFieldSubquery(sanitizeString(proposalResponse.Comment))} ` +
         `WHERE ID = ${proposalResponseId};`
     );
 
     if (response.affectedRows !== 1) {
-      throw new Error(
-        `Failed to save ProposalResponse for user: ${proposalResponse.UserName}`
-      );
+      throw new Error(`Failed to save ProposalResponse for user: ${proposalResponse.UserName}`);
     }
 
     const proposalResponses: DBOProposalResponse[] = await query(

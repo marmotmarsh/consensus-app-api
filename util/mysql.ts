@@ -33,3 +33,10 @@ export function makeNullableFieldSubquery(field: any | null): string {
     return `'${field}'`;
   }
 }
+
+export function sanitizeString(str: string | null): string | null {
+  if (str === null) {
+    return str;
+  }
+  return str.replace("'", `\'`);
+}

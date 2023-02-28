@@ -1,6 +1,12 @@
 import util from 'util';
 
-import { checkIfValidUUID4, createDBConnection, GLOBAL_HEADERS, makeNullableFieldSubquery } from '../../util';
+import {
+  checkIfValidUUID4,
+  createDBConnection,
+  GLOBAL_HEADERS,
+  makeNullableFieldSubquery as mkNullFieldSubquery,
+  sanitizeString,
+} from '../../util';
 import { Event, Context, DBOProposal, QueryResponseObject } from '../../types';
 import { PROPOSAL_TABLE_NAME } from '../../const';
 
@@ -21,11 +27,11 @@ export async function updateProposal(event: Event, context: Context) {
 
     const response: QueryResponseObject = await query(
       `UPDATE ${PROPOSAL_TABLE_NAME} SET ` +
-        (!!proposal.Title ? `Title = '${proposal.Title}', ` : '') +
-        (!!proposal.Description ? `Description = '${proposal.Description}', ` : '') +
-        (!!proposal.Email ? `Email = ${makeNullableFieldSubquery(proposal.Email)}, ` : '') +
-        (!!proposal.UserId ? `UserId = ${makeNullableFieldSubquery(proposal.UserId)}, ` : '') +
-        (!!proposal.UserName ? `UserName = ${makeNullableFieldSubquery(proposal.UserName)}, ` : '') +
+        (!!proposal.Title ? `Title = '${sanitizeString(proposal.Title)}', ` : '') +
+        (!!proposal.Description ? `Description = '${sanitizeString(proposal.Description)}', ` : '') +
+        (!!proposal.Email ? `Email = ${mkNullFieldSubquery(sanitizeString(proposal.Email))}, ` : '') +
+        (!!proposal.UserId ? `UserId = ${mkNullFieldSubquery(sanitizeString(proposal.UserId))}, ` : '') +
+        (!!proposal.UserName ? `UserName = ${mkNullFieldSubquery(sanitizeString(proposal.UserName))}, ` : '') +
         `WHERE ID = ${proposalId};`
     );
 
