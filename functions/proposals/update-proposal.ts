@@ -1,6 +1,7 @@
 import util from 'util';
 
 import {
+  checkIfValidUUID4,
   createDBConnection,
   GLOBAL_HEADERS,
   makeNullableFieldSubquery,
@@ -18,6 +19,10 @@ export async function updateProposal(event: Event, context: Context) {
 
     const proposal: DBOProposal = JSON.parse(event.body || '');
     const proposalId = proposal.ID;
+
+    if (!checkIfValidUUID4(proposalId)) {
+      throw new Error(`${proposalId} is not a valid Id.`);
+    }
 
     const response: QueryResponseObject = await query(
       `UPDATE ${PROPOSAL_TABLE_NAME} SET ` +

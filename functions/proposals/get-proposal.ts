@@ -15,7 +15,7 @@ export async function getProposal(event: Event, context: Context) {
   try {
     const proposalId = event.path.split('/')[4];
 
-    if (checkIfValidUUID4(proposalId)) {
+    if (!checkIfValidUUID4(proposalId)) {
       throw new Error(`${proposalId} is not a valid Id.`);
     }
 
