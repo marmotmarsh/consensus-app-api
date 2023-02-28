@@ -38,5 +38,5 @@ export function sanitizeString(str: string | null): string | null {
   if (str === null) {
     return str;
   }
-  return str.replace("'", `\'`);
+  return str.replace(/'/g, "\\'");
 }
