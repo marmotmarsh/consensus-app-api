@@ -1,7 +1,7 @@
 import { Handler } from '@netlify/functions';
 import { GLOBAL_HEADERS } from '../../util';
 import { createProposalResponse } from './create-proposal-response';
-import { getProposalResponsesByProposalId } from './get-proposal-responses';
+import { getProposalResponsesByProposalId } from './get-proposal-responses-by-proposal-id';
 import { updateProposalResponse } from './update-proposal-response';
 
 export const handler: Handler = async (event, context) => {
@@ -24,10 +24,7 @@ export const handler: Handler = async (event, context) => {
       }
       case 'GET': {
         // Get Proposal Responses by ProposalId
-        if (
-          subPaths[3] === 'proposal-responses' &&
-          subPaths[4] === 'byProposalId'
-        ) {
+        if (subPaths[3] === 'proposal-responses' && subPaths[4] === 'byProposalId') {
           return await getProposalResponsesByProposalId(event, context);
         }
       }

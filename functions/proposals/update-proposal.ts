@@ -1,11 +1,14 @@
 import util from 'util';
+import _ from 'lodash';
 
 import {
   checkIfValidUUID4,
   createDBConnection,
   GLOBAL_HEADERS,
-  makeNullableFieldSubquery as mkNullFieldSubquery,
-  sanitizeString,
+  buildQueryString,
+  MethodEnum,
+  transformToDBOProposal,
+  transformFromDBOProposal,
 } from '../../util';
 import { Event, Context, DBOProposal, QueryResponseObject } from '../../types';
 import { PROPOSAL_TABLE_NAME } from '../../const';
@@ -18,22 +21,21 @@ export async function updateProposal(event: Event, context: Context) {
     const method = event.httpMethod;
     const path = event.path;
 
-    const proposal: DBOProposal = JSON.parse(event.body || '');
+    const proposal: DBOProposal = transformToDBOProposal(JSON.parse(event.body || ''));
     const proposalId = proposal.ID;
 
     if (!checkIfValidUUID4(proposalId)) {
       throw new Error(`${proposalId} is not a valid Id.`);
     }
 
-    const response: QueryResponseObject = await query(
-      `UPDATE ${PROPOSAL_TABLE_NAME} SET ` +
-        (!!proposal.Title ? `Title = '${sanitizeString(proposal.Title)}', ` : '') +
-        (!!proposal.Description ? `Description = '${sanitizeString(proposal.Description)}', ` : '') +
-        (!!proposal.Email ? `Email = ${mkNullFieldSubquery(sanitizeString(proposal.Email))}, ` : '') +
-        (!!proposal.UserId ? `UserId = ${mkNullFieldSubquery(sanitizeString(proposal.UserId))}, ` : '') +
-        (!!proposal.UserName ? `UserName = ${mkNullFieldSubquery(sanitizeString(proposal.UserName))}, ` : '') +
-        `WHERE ID = ${proposalId};`
-    );
+    const queryString = buildQueryString<DBOProposal>({
+      method: MethodEnum.UPDATE,
+      tableName: PROPOSAL_TABLE_NAME,
+      fieldValues: _.omit(proposal, 'ID'),
+      where: { ID: proposalId },
+    });
+
+    const response: QueryResponseObject = await query(queryString);
 
     if (response.affectedRows !== 1) {
       throw new Error(`Failed to save Proposal with title: ${proposal.Title}`);
@@ -44,7 +46,7 @@ export async function updateProposal(event: Event, context: Context) {
     return {
       statusCode: 200,
       headers: GLOBAL_HEADERS,
-      body: JSON.stringify(proposals[0] || {}),
+      body: JSON.stringify(transformFromDBOProposal(proposals[0]) || {}),
     };
   } catch (error) {
     return {

@@ -1,7 +1,7 @@
 import util from 'util';
 import { v4 as uuid4 } from 'uuid';
 
-import { createDBConnection, GLOBAL_HEADERS, makeNullableFieldSubquery, sanitizeString } from '../../util';
+import { createDBConnection, GLOBAL_HEADERS, buildQueryString } from '../../util';
 import { Event, Context, DBOProposalResponse, QueryResponseObject, DBOProposal } from '../../types';
 import { PROPOSAL_RESPONSE_TABLE_NAME, PROPOSAL_TABLE_NAME } from '../../const';
 
@@ -24,14 +24,17 @@ export async function createProposalResponse(event: Event, context: Context) {
       throw new Error(`Invalid ProposalId: ${proposalResponse.ProposalId}`);
     }
 
-    const response: QueryResponseObject = await query(
-      `INSERT INTO ${PROPOSAL_RESPONSE_TABLE_NAME} (ID, ProposalId, UserName, Thumb, Comment) VALUES ` +
-        `('${newProposalResponseId}', ` +
-        `'${proposalResponse.ProposalId}', ` +
-        `'${sanitizeString(proposalResponse.UserName)}', ` +
-        `${proposalResponse.Thumb}, ` +
-        `${makeNullableFieldSubquery(sanitizeString(proposalResponse.Comment))});`
-    );
+    const queryString = buildQueryString<DBOProposalResponse>({
+      method: 'SELECT',
+      tableName: PROPOSAL_RESPONSE_TABLE_NAME,
+      fieldValues: {
+        ...proposalResponse,
+        ID: newProposalResponseId,
+      },
+      where: {},
+    });
+
+    const response: QueryResponseObject = await query(queryString);
 
     if (response.affectedRows !== 1) {
       throw new Error(`Failed to save Proposal Response for User: ${proposalResponse.UserName}`);

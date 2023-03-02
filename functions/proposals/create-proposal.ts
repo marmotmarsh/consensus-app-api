@@ -1,7 +1,14 @@
 import util from 'util';
 import { v4 as uuid4 } from 'uuid';
 
-import { createDBConnection, GLOBAL_HEADERS, makeNullableFieldSubquery, sanitizeString } from '../../util';
+import {
+  createDBConnection,
+  GLOBAL_HEADERS,
+  buildQueryString,
+  MethodEnum,
+  transformToDBOProposal,
+  transformFromDBOProposal,
+} from '../../util';
 import { Event, Context, DBOProposal, QueryResponseObject } from '../../types';
 import { PROPOSAL_TABLE_NAME } from '../../const';
 
@@ -13,16 +20,20 @@ export async function createProposal(event: Event, context: Context) {
     const method = event.httpMethod;
     const path = event.path;
 
-    const newProposal: DBOProposal = JSON.parse(event.body || '');
+    const newProposal: DBOProposal = transformToDBOProposal(JSON.parse(event.body || ''));
     const newProposalId = uuid4();
 
-    const response: QueryResponseObject = await query(
-      `INSERT INTO ${PROPOSAL_TABLE_NAME} (ID, Title, Description, Email, UserId, UserName) VALUES ` +
-        `('${newProposalId}', '${sanitizeString(newProposal.Title)}', '${sanitizeString(newProposal.Description)}', ` +
-        `${makeNullableFieldSubquery(sanitizeString(newProposal.Email))}, ` +
-        `${makeNullableFieldSubquery(newProposal.UserId)}, ` +
-        `${makeNullableFieldSubquery(sanitizeString(newProposal.UserName))});`
-    );
+    const queryString = buildQueryString<DBOProposal>({
+      method: MethodEnum.INSERT,
+      tableName: PROPOSAL_TABLE_NAME,
+      fieldValues: {
+        ...newProposal,
+        ID: newProposalId,
+      },
+      where: {},
+    });
+
+    const response: QueryResponseObject = await query(queryString);
 
     if (response.affectedRows !== 1) {
       throw new Error(`Failed to save Proposal with title: ${newProposal.Title}`);
@@ -33,7 +44,7 @@ export async function createProposal(event: Event, context: Context) {
     return {
       statusCode: 200,
       headers: GLOBAL_HEADERS,
-      body: JSON.stringify(proposals[0] || {}),
+      body: JSON.stringify(transformFromDBOProposal(proposals[0]) || {}),
     };
   } catch (error) {
     return {
