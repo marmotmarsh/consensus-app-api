@@ -1,7 +1,15 @@
 import util from 'util';
 import _ from 'lodash';
 
-import { checkIfValidUUID4, createDBConnection, GLOBAL_HEADERS, buildQueryString } from '../../util';
+import {
+  checkIfValidUUID4,
+  createDBConnection,
+  GLOBAL_HEADERS,
+  buildQueryString,
+  MethodEnum,
+  transformToDBOProposalResponse,
+  transformFromDBOProposalResponse,
+} from '../../util';
 import { Event, Context, QueryResponseObject, DBOProposalResponse } from '../../types';
 import { PROPOSAL_RESPONSE_TABLE_NAME } from '../../const';
 
@@ -13,7 +21,7 @@ export async function updateProposalResponse(event: Event, context: Context) {
     const method = event.httpMethod;
     const path = event.path;
 
-    const proposalResponse: DBOProposalResponse = JSON.parse(event.body || '');
+    const proposalResponse: DBOProposalResponse = transformToDBOProposalResponse(JSON.parse(event.body || ''));
     const proposalResponseId = proposalResponse.ID;
 
     if (!checkIfValidUUID4(proposalResponseId)) {
@@ -21,7 +29,7 @@ export async function updateProposalResponse(event: Event, context: Context) {
     }
 
     const queryString = buildQueryString<DBOProposalResponse>({
-      method: 'SELECT',
+      method: MethodEnum.UPDATE,
       tableName: PROPOSAL_RESPONSE_TABLE_NAME,
       fieldValues: _.omit(proposalResponse, 'ID', 'proposalId'),
       where: {
@@ -42,7 +50,7 @@ export async function updateProposalResponse(event: Event, context: Context) {
     return {
       statusCode: 200,
       headers: GLOBAL_HEADERS,
-      body: JSON.stringify(proposalResponses[0] || {}),
+      body: JSON.stringify(transformFromDBOProposalResponse(proposalResponses[0]) || {}),
     };
   } catch (error) {
     return {

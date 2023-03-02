@@ -1,13 +1,6 @@
 import util from 'util';
 
-import {
-  buildQueryString,
-  checkIfValidUUID4,
-  createDBConnection,
-  GLOBAL_HEADERS,
-  MethodEnum,
-  transformFromDBOProposalResponse,
-} from '../../util';
+import { buildQueryString, checkIfValidUUID4, createDBConnection, GLOBAL_HEADERS } from '../../util';
 import { Event, Context, DBOProposalResponse, DBOProposal } from '../../types';
 import { PROPOSAL_RESPONSE_TABLE_NAME } from '../../const';
 
@@ -23,7 +16,7 @@ export async function getProposalResponsesByProposalId(event: Event, context: Co
     }
 
     const queryString = buildQueryString<DBOProposalResponse>({
-      method: MethodEnum.SELECT,
+      method: 'SELECT',
       tableName: PROPOSAL_RESPONSE_TABLE_NAME,
       fieldValues: {},
       where: {
@@ -36,7 +29,7 @@ export async function getProposalResponsesByProposalId(event: Event, context: Co
     return {
       statusCode: 200,
       headers: GLOBAL_HEADERS,
-      body: JSON.stringify(proposalResponses.map(transformFromDBOProposalResponse)),
+      body: JSON.stringify(proposalResponses),
     };
   } catch (error) {
     return {
