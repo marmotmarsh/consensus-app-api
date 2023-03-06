@@ -1,10 +1,20 @@
 import { DBOProposal, DBOProposalResponse, Proposal, ProposalResponse } from '../types';
+import { GLOBAL_HEADERS } from './mysql';
 
 export function checkIfValidUUID4(str: string): boolean {
   // Regular expression to check if string is a valid UUID
   const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
 
   return regexExp.test(str);
+}
+
+export function handleError(error: Error) {
+  console.error(error);
+  return {
+    statusCode: 400,
+    headers: GLOBAL_HEADERS,
+    body: JSON.stringify(error),
+  };
 }
 
 export function transformToDBOProposal(o: Proposal): DBOProposal {

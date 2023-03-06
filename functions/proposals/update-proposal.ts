@@ -9,6 +9,7 @@ import {
   MethodEnum,
   transformToDBOProposal,
   transformFromDBOProposal,
+  handleError,
 } from '../../util';
 import { Event, Context, DBOProposal, QueryResponseObject } from '../../types';
 import { PROPOSAL_TABLE_NAME } from '../../const';
@@ -51,11 +52,7 @@ export async function updateProposal(event: Event, context: Context) {
       body: JSON.stringify(transformFromDBOProposal(proposals[0]) || {}),
     };
   } catch (error) {
-    return {
-      statusCode: 400,
-      headers: GLOBAL_HEADERS,
-      body: JSON.stringify(error),
-    };
+    return handleError(error);
   } finally {
     connection.end();
   }

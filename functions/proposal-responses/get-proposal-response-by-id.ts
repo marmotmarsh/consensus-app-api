@@ -5,6 +5,7 @@ import {
   checkIfValidUUID4,
   createDBConnection,
   GLOBAL_HEADERS,
+  handleError,
   MethodEnum,
   transformFromDBOProposalResponse,
 } from '../../util';
@@ -41,11 +42,7 @@ export async function getProposalResponseById(event: Event, context: Context) {
       body: JSON.stringify(transformFromDBOProposalResponse(proposalResponses[0])),
     };
   } catch (error) {
-    return {
-      statusCode: 400,
-      headers: GLOBAL_HEADERS,
-      body: JSON.stringify(error),
-    };
+    return handleError(error);
   } finally {
     connection.end();
   }

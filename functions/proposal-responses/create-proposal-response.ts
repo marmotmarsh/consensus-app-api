@@ -1,8 +1,8 @@
 import util from 'util';
 import { v4 as uuid4 } from 'uuid';
 
-import { createDBConnection, GLOBAL_HEADERS, buildQueryString, MethodEnum, QueryOptions } from '../../util';
-import { Event, Context, DBOProposalResponse, QueryResponseObject, DBOProposal, Proposal } from '../../types';
+import { createDBConnection, GLOBAL_HEADERS, buildQueryString, MethodEnum, handleError } from '../../util';
+import { Event, Context, DBOProposalResponse, QueryResponseObject, DBOProposal } from '../../types';
 import { PROPOSAL_RESPONSE_TABLE_NAME, PROPOSAL_TABLE_NAME } from '../../const';
 
 export async function createProposalResponse(event: Event, context: Context) {
@@ -60,11 +60,7 @@ export async function createProposalResponse(event: Event, context: Context) {
       body: JSON.stringify(proposalResponses[0] || {}),
     };
   } catch (error) {
-    return {
-      statusCode: 400,
-      headers: GLOBAL_HEADERS,
-      body: JSON.stringify(error),
-    };
+    return handleError(error);
   } finally {
     connection.end();
   }

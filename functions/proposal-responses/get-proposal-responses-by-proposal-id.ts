@@ -5,10 +5,11 @@ import {
   checkIfValidUUID4,
   createDBConnection,
   GLOBAL_HEADERS,
+  handleError,
   MethodEnum,
   transformFromDBOProposalResponse,
 } from '../../util';
-import { Event, Context, DBOProposalResponse, DBOProposal } from '../../types';
+import { Event, Context, DBOProposalResponse } from '../../types';
 import { PROPOSAL_RESPONSE_TABLE_NAME } from '../../const';
 
 export async function getProposalResponsesByProposalId(event: Event, context: Context) {
@@ -41,11 +42,7 @@ export async function getProposalResponsesByProposalId(event: Event, context: Co
       body: JSON.stringify(proposalResponses.map(transformFromDBOProposalResponse)),
     };
   } catch (error) {
-    return {
-      statusCode: 400,
-      headers: GLOBAL_HEADERS,
-      body: JSON.stringify(error),
-    };
+    return handleError(error);
   } finally {
     connection.end();
   }
