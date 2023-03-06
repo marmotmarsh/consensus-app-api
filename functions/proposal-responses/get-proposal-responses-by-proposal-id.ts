@@ -15,11 +15,13 @@ export async function getProposalResponsesByProposalId(event: Event, context: Co
   const connection = createDBConnection();
   const query = util.promisify(connection.query).bind(connection);
 
+  console.log(`Getting all Proposal Responses for a Proposal`);
+
   try {
     const proposalId = event.path.split('/')[4];
 
     if (!checkIfValidUUID4(proposalId)) {
-      throw new Error(`Invalud syntax for Id: ${proposalId}.`);
+      throw new Error(`Invalid syntax for Id: ${proposalId}.`);
     }
 
     const queryString = buildQueryString<DBOProposalResponse>({

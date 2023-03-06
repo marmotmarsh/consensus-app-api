@@ -16,11 +16,11 @@ export async function createProposal(event: Event, context: Context) {
   const connection = createDBConnection();
   const query = util.promisify(connection.query).bind(connection);
 
+  console.log(`Saving a New Proposal`);
+
   try {
     const method = event.httpMethod;
     const path = event.path;
-
-    console.log(`Saving a New Proposal with data: ${event.body}`);
 
     const newProposal: DBOProposal = transformToDBOProposal(JSON.parse(event.body || ''));
     const newProposalId = uuid4();
@@ -42,6 +42,8 @@ export async function createProposal(event: Event, context: Context) {
     }
 
     const proposals: DBOProposal[] = await query(`SELECT * FROM ${PROPOSAL_TABLE_NAME} WHERE ID = "${newProposalId}";`);
+
+    console.log(`Saved a new proposal with id: ${newProposalId}`);
 
     return {
       statusCode: 200,

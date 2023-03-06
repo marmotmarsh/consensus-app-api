@@ -15,6 +15,8 @@ export async function getProposalResponseById(event: Event, context: Context) {
   const connection = createDBConnection();
   const query = util.promisify(connection.query).bind(connection);
 
+  console.log(`Getting a Proposal Response`);
+
   try {
     const proposalResponseId = event.path.split('/')[4];
 

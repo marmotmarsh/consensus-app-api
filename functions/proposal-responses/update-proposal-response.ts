@@ -17,6 +17,8 @@ export async function updateProposalResponse(event: Event, context: Context) {
   const connection = createDBConnection();
   const query = util.promisify(connection.query).bind(connection);
 
+  console.log(`Updating a Proposal Response`);
+
   try {
     const method = event.httpMethod;
     const path = event.path;
