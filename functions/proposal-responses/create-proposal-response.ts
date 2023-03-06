@@ -17,7 +17,7 @@ export async function createProposalResponse(event: Event, context: Context) {
 
     const proposalResponse: DBOProposalResponse = JSON.parse(event.body || '');
 
-    const getProposalQueryString = buildQueryString<DBOProposal>({
+    const getProposalQueryString = buildQueryString<DBOProposalResponse>({
       method: MethodEnum.SELECT,
       tableName: PROPOSAL_TABLE_NAME,
       fieldValues: {},
