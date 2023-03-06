@@ -20,7 +20,7 @@ export async function createProposal(event: Event, context: Context) {
     const method = event.httpMethod;
     const path = event.path;
 
-    console.log('Saving a New Proposal');
+    console.log(`Saving a New Proposal with data: ${event.body}`);
 
     const newProposal: DBOProposal = transformToDBOProposal(JSON.parse(event.body || ''));
     const newProposalId = uuid4();
