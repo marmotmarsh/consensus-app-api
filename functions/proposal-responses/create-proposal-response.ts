@@ -1,7 +1,14 @@
 import util from 'util';
 import { v4 as uuid4 } from 'uuid';
 
-import { createDBConnection, GLOBAL_HEADERS, buildQueryString, MethodEnum, handleError } from '../../util';
+import {
+  createDBConnection,
+  GLOBAL_HEADERS,
+  buildQueryString,
+  MethodEnum,
+  handleError,
+  transformToDBOProposalResponse,
+} from '../../util';
 import { Event, Context, DBOProposalResponse, QueryResponseObject, DBOProposal } from '../../types';
 import { PROPOSAL_RESPONSE_TABLE_NAME, PROPOSAL_TABLE_NAME } from '../../const';
 
@@ -15,7 +22,7 @@ export async function createProposalResponse(event: Event, context: Context) {
     const method = event.httpMethod;
     const path = event.path;
 
-    const proposalResponse: DBOProposalResponse = JSON.parse(event.body || '');
+    const proposalResponse: DBOProposalResponse = transformToDBOProposalResponse(JSON.parse(event.body || ''));
 
     const getProposalQueryString = buildQueryString<DBOProposalResponse>({
       method: MethodEnum.SELECT,
