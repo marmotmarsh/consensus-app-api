@@ -21,7 +21,7 @@ export async function getProposalResponseById(event: Event, context: Context) {
     const proposalResponseId = event.path.split('/')[4];
 
     if (!checkIfValidUUID4(proposalResponseId)) {
-      throw new Error(`Invalud syntax for Id: ${proposalResponseId}.`);
+      throw new Error(`Invalid syntax for Id: ${proposalResponseId}.`);
     }
 
     const queryString = buildQueryString<DBOProposalResponse>({

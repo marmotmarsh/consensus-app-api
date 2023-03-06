@@ -32,7 +32,7 @@ export function sanitizeString(str: any | null): string | null {
   if (str === null) {
     return str;
   }
-  return str.replace(/(?<!\\)'/g, `\'`);
+  return str.replace(/(?<!\\)'/g, `\\'`);
 }
 
 export function sqlifyQuery(field: any | null): string {

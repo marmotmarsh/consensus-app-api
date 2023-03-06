@@ -16,7 +16,7 @@ export async function createProposal(event: Event, context: Context) {
   const connection = createDBConnection();
   const query = util.promisify(connection.query).bind(connection);
 
-  console.log(`Saving a New Proposal`);
+  console.log(`Creating a New Proposal`);
 
   try {
     const method = event.httpMethod;

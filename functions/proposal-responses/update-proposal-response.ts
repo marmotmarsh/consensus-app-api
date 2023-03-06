@@ -27,7 +27,7 @@ export async function updateProposalResponse(event: Event, context: Context) {
     const proposalResponseId = proposalResponse.ID;
 
     if (!checkIfValidUUID4(proposalResponseId)) {
-      throw new Error(`Invalud syntax for Id: ${proposalResponseId}.`);
+      throw new Error(`Invalid syntax for Id: ${proposalResponseId}.`);
     }
 
     const queryString = buildQueryString<DBOProposalResponse>({
