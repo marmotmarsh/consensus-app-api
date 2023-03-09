@@ -19,7 +19,7 @@ export async function getProposalResponsesByProposalId(event: Event, context: Co
   console.log(`Getting all Proposal Responses for a Proposal`);
 
   try {
-    const proposalId = event.path.split('/')[4];
+    const proposalId = event.path.split('/')[5];
 
     if (!checkIfValidUUID4(proposalId)) {
       throw new Error(`Invalid syntax for Id: ${proposalId}.`);
