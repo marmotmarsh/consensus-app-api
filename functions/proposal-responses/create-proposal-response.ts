@@ -42,7 +42,7 @@ export async function createProposalResponse(event: Event, context: Context) {
     const newProposalResponseId = uuid4();
 
     const queryString = buildQueryString<DBOProposalResponse>({
-      method: MethodEnum.SELECT,
+      method: MethodEnum.INSERT,
       tableName: PROPOSAL_RESPONSE_TABLE_NAME,
       fieldValues: {
         ...proposalResponse,

@@ -10,6 +10,7 @@ export function checkIfValidUUID4(str: string): boolean {
 
 export function handleError(error: Error) {
   console.error(error);
+
   return {
     statusCode: 400,
     headers: GLOBAL_HEADERS,
